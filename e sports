@@ -1,0 +1,93 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+FILE_NAME = "valorant_players.csv"
+
+while True:
+    print("\n====== Valorant Tournament Menu ======")
+    print("1. Display all players")
+    print("2. Add new Valorant player")
+    print("3. Search players by team")
+    print("4. Update player wins")
+    print("5. Show top performer")
+    print("6. Show KDA graph")
+    print("7. Show players with wins greater than given value")
+   
+
+    choice = int(input("Enter your choice: "))
+
+    # Read CSV file
+    df = pd.read_csv(FILE_NAME)
+    df.columns = df.columns.str.strip()   # removes extra spaces in column names
+
+    # 1. Display all players
+    if choice == 1:
+        print("\n--- Valorant Player Records ---\n")
+        print(df)
+
+    # 2. Add new player
+    elif choice == 2:
+        pid = int(input("Enter Player ID: "))
+        name = input("Enter Player Name: ")
+        team = input("Enter Team Name: ")
+        matches = int(input("Enter Matches Played: "))
+        wins = int(input("Enter Wins: "))
+        earnings = int(input("Enter Earnings: "))
+
+        df.loc[len(df)] = [pid, name, team, "Valorant", matches, wins, earnings]
+        df.to_csv(FILE_NAME, index=False)
+
+        print("Player added successfully.")
+
+    # 3. Search players by team
+    elif choice == 3:
+        t = input("Enter team name: ")
+        result = df[df["Team"] == t]
+
+        if result.empty:
+            print("No players found.")
+        else:
+            print(result)
+
+    # 4. Update player wins
+    elif choice == 4:
+        pid = int(input("Enter Player ID: "))
+        new_wins = int(input("Enter updated wins: "))
+
+        if pid in df["Player_ID"].values:
+            df.loc[df["Player_ID"] == pid, "Wins"] = new_wins
+            df.to_csv(FILE_NAME, index=False)
+            print("Record updated successfully.")
+        else:
+            print("Player not found.")
+
+    # 5. Show top performer
+    elif choice == 5:
+        top = df.loc[df["Wins"].idxmax()]
+        print("\n--- Top Valorant Performer ---\n")
+        print(top)
+
+    # 6. Show KDA graph
+    elif choice == 6:
+        df["KDA"] = df["Wins"] / df["Matches"]
+
+        plt.bar(df["Player_Name"], df["KDA"])
+        plt.xlabel("Player Name")
+        plt.ylabel("KDA")
+        plt.title("KDA of Valorant Players")
+        plt.show()
+
+
+    # 7. Players with wins greater than given value
+    elif choice == 8:
+        w = int(input("Enter minimum wins: "))
+        result = df[df["Wins"] > w]
+
+        if result.empty:
+            print("No players found.")
+        else:
+            print(result)
+
+
+    else:
+        print("Invalid choice.")
