@@ -79,7 +79,7 @@ while True:
 
 
     # 7. Players with wins greater than given value
-    elif choice == 8:
+    elif choice == 7:
         w = int(input("Enter minimum wins: "))
         result = df[df["Wins"] > w]
 
